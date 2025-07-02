@@ -85,6 +85,6 @@ public class PlayerAttackAbility : PlayerAbility
         // damageableObject.Damaged(_owner.Stat.AttackDamage);
 
         PhotonView otherPhoton = other.GetComponent<PhotonView>();
-        otherPhoton.RPC(nameof(Player.Damaged), RpcTarget.AllBuffered, _owner.Stat.AttackDamage);
+        otherPhoton.RPC(nameof(Player.Damaged), RpcTarget.AllBuffered, _owner.Stat.AttackDamage, _photonView.Owner.ActorNumber);
     }
 }

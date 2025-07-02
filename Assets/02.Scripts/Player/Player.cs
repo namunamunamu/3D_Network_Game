@@ -12,7 +12,7 @@ public enum EPlayerState
     Dead
 }
 
-
+[RequireComponent(typeof(PlayerMoveAbility))]
 public class Player : MonoBehaviour, IDamageable
 {
     [Header("Current Status")]
@@ -26,6 +26,8 @@ public class Player : MonoBehaviour, IDamageable
     public GameObject PlayerIcon;
     public GameObject EnemyIcon;
     public Slider HealthSlider;
+
+    public int Score = 0;
 
 
     [SerializeField] private bool _isSPComsumed = false;
@@ -91,7 +93,7 @@ public class Player : MonoBehaviour, IDamageable
         }
     }
 
-    public void AddCurrentHP(int amount)
+    public void AddCurrentHP(int amount, int actorNumber = 0)
     {
         if (amount < 0)
         {
@@ -109,8 +111,7 @@ public class Player : MonoBehaviour, IDamageable
         else if (CurrentHP + amount <= 0)
         {
             CurrentHP = 0;
-            OnDead();
-            OnDeadEvent?.Invoke();
+            OnDead(actorNumber);
         }
 
         CurrentHP += amount;
@@ -119,7 +120,6 @@ public class Player : MonoBehaviour, IDamageable
 
     public void AddCurrentSP(float amount)
     {
-        Debug.Log(amount);
         if (amount < 0)
         {
             _isSPComsumed = true;
@@ -150,17 +150,17 @@ public class Player : MonoBehaviour, IDamageable
     }
 
     [PunRPC]
-    public void Damaged(int damage)
+    public void Damaged(int damage, int actorNumber)
     {
         if (_state == EPlayerState.Dead)
         {
             return;
         }
 
-        AddCurrentHP(-damage);
+        AddCurrentHP(-damage, actorNumber);
     }
 
-    private void OnDead()
+    private void OnDead(int actorNumber)
     {
         _state = EPlayerState.Dead;
         Animator.SetBool("IsDead", true);
@@ -168,7 +168,16 @@ public class Player : MonoBehaviour, IDamageable
         CharacterController.enabled = false;
         GetAbility<PlayerRotateAbility>().enabled = false;
 
+        if (PhotonView.IsMine)
+        {
+            MakeItems(UnityEngine.Random.Range(1, 4));
+        }
+
         StartCoroutine(RespawnCoroutine());
+
+
+        RoomManager.Instance.OnPlayerDeath(PhotonView.Owner.ActorNumber, actorNumber);
+        OnDeadEvent?.Invoke();
     }
 
     private IEnumerator RespawnCoroutine()
@@ -201,6 +210,30 @@ public class Player : MonoBehaviour, IDamageable
     public void PlayHitAnimation()
     {
         Animator.SetTrigger("Hit");
+    }
+
+    private void MakeItems(int count)
+    {
+        Vector3 dropPosition = transform.position + new Vector3(0, 2, 0);
+        for (int i = 0; i < count; ++i)
+        {
+            // 포톤의 네트워크 객체의 생명 주기
+            // Player   : 플레이어가 생성하고, 플레이어가 나가면 자동삭제(PhotonNetwork.Instantinate/Destroy)
+            // Room     : 룸이 생성하고, 룸이 없어지면 삭제.. (PhotonNetwork.InstantinateRoomObject/Destroy)
+            // PhotonNetwork.InstantiateRoomObject("Item", transform.position + new Vector3(0, 2, 0), Quaternion.identity, 0);
+
+            ItemObjectFactory.Instnace.RequestCreate(EItemType.Score, dropPosition);
+        }
+
+        if (UnityEngine.Random.Range(0, 1) <= 0.3f)
+        {
+            ItemObjectFactory.Instnace.RequestCreate(EItemType.Stamina, dropPosition);
+        }
+
+        if (UnityEngine.Random.Range(0, 1) <= 0.2f)
+        {
+            ItemObjectFactory.Instnace.RequestCreate(EItemType.Health, dropPosition);
+        }
     }
 
 

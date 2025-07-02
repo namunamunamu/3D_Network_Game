@@ -10,14 +10,15 @@ public class UI_RoomLog : MonoBehaviour
     private void Start()
     {
         RoomManager.Instance.OnPlayerEntered += PlayerEnterLog;
-        RoomManager.Instance.OnPlayerLeft += PlayerExitLog;
+        RoomManager.Instance.OnPlayerLeft += PlayerLeftLog;
+        RoomManager.Instance.OnPlayerDead += PlayerDeathLog;
 
         Refresh();
     }
 
     private void Refresh()
     {
-        LogTextUI.text += _logMessage;
+        LogTextUI.text = _logMessage;
     }
 
     public void PlayerEnterLog(string playerName)
@@ -27,9 +28,15 @@ public class UI_RoomLog : MonoBehaviour
         Refresh();
     }
 
-    public void PlayerExitLog(string playerName)
+    public void PlayerLeftLog(string playerName)
     {
         _logMessage += $"\n<color=#00ff00ff>{playerName}</color>님이 <color=#ff0000ff>퇴장</color>하였습니다.";
+        Refresh();
+    }
+
+    public void PlayerDeathLog(string playername, string attackerName)
+    {
+        _logMessage += $"\n<color=#00ff00ff>{attackerName}</color>님이 <color=#808080ff>{playername}</color>님을 <color=red>처치</color>하였습니다.";
         Refresh();
     }
 }

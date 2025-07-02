@@ -14,6 +14,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     public event Action OnRoomDataChanged;
     public event Action<string> OnPlayerEntered;
     public event Action<string> OnPlayerLeft;
+    public event Action<string, string> OnPlayerDead;
 
     public void Awake()
     {
@@ -35,6 +36,14 @@ public class RoomManager : MonoBehaviourPunCallbacks
         SetRoom();
 
         OnRoomDataChanged?.Invoke();
+    }
+
+    public void OnPlayerDeath(int actorNumber, int otherNumber)
+    {
+        string deadPlayerName = _room.Players[actorNumber].NickName + "_" + actorNumber;
+        string attackPlayerName = _room.Players[otherNumber].NickName + "_" + otherNumber;
+
+        OnPlayerDead?.Invoke(deadPlayerName, attackPlayerName);
     }
 
     // 새로운 플레이어가 방에 입장하면 자동으로 호출되는 함수
