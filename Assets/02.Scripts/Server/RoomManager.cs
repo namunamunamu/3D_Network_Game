@@ -16,6 +16,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
     public event Action<string> OnPlayerLeft;
     public event Action<string, string> OnPlayerDead;
 
+    private bool _isInitialized = false;
+
     public void Awake()
     {
         if (Instance == null)
@@ -28,10 +30,34 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
     }
 
+    private void Start()
+    {
+        Init();
+    }
 
     public override void OnJoinedRoom()
     {
+        Init();
+    }
+
+    private void Init()
+    {
+        if (_isInitialized)
+        {
+            return;
+        }
+
+        if (!PhotonNetwork.InRoom) return;
+
+        _isInitialized = true;
+
+
         GeneratePlayer();
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GenerateBear();
+        }
 
         SetRoom();
 
@@ -41,7 +67,15 @@ public class RoomManager : MonoBehaviourPunCallbacks
     public void OnPlayerDeath(int actorNumber, int otherNumber)
     {
         string deadPlayerName = _room.Players[actorNumber].NickName + "_" + actorNumber;
-        string attackPlayerName = _room.Players[otherNumber].NickName + "_" + otherNumber;
+        string attackPlayerName = "";
+        if (otherNumber == 99)
+        {
+            attackPlayerName = "곰";
+        }
+        else
+        {
+            attackPlayerName = _room.Players[otherNumber].NickName + "_" + otherNumber;
+        }
 
         OnPlayerDead?.Invoke(deadPlayerName, attackPlayerName);
     }
@@ -70,11 +104,18 @@ public class RoomManager : MonoBehaviourPunCallbacks
     {
         int randomInt = UnityEngine.Random.Range(0, GameManager.Instance.SpawnPoints.Count);
         Vector3 playerPosition = GameManager.Instance.SpawnPoints[randomInt].position;
-        PhotonNetwork.Instantiate("Player", playerPosition, Quaternion.identity);
+        PhotonNetwork.Instantiate($"Player_{PhtonServerManager._instance.PlayerType}", playerPosition, Quaternion.identity);
     }
 
     private void SetRoom()
     {
         _room = PhotonNetwork.CurrentRoom;
+    }
+
+    private void GenerateBear()
+    {
+        int randomInt = UnityEngine.Random.Range(0, GameManager.Instance.SpawnPoints.Count);
+        Vector3 bearPosition = GameManager.Instance.SpawnPoints[randomInt].position;
+        PhotonNetwork.Instantiate("Bear", bearPosition, Quaternion.identity);
     }
 }
