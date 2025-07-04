@@ -270,7 +270,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4849889740214481076}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Model
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -3210,7 +3210,7 @@ GameObject:
   - component: {fileID: 3716149792891475806}
   - component: {fileID: 5672257791612518870}
   m_Layer: 3
-  m_Name: Player
+  m_Name: Player_Male
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3315,7 +3315,6 @@ MonoBehaviour:
   PlayerIcon: {fileID: 167686985981557465}
   EnemyIcon: {fileID: 2928447797803845677}
   HealthSlider: {fileID: 0}
-  Score: 0
   _isSPComsumed: 0
   _spRecoveryTimer: 0
 --- !u!114 &8585145640017826367
@@ -3460,6 +3459,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 8585145640017826367}
   - {fileID: 3716149792891475806}
+  - {fileID: 6473867384890875412}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -3829,6 +3829,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5610884078883986163, guid: 9fbe61d1f4bc091439f25f985dd189a5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2451154532488001671}
+    - targetCorrespondingSourceObject: {fileID: 5610884078883986163, guid: 9fbe61d1f4bc091439f25f985dd189a5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6473867384890875412}
   m_SourcePrefab: {fileID: 100100000, guid: 9fbe61d1f4bc091439f25f985dd189a5, type: 3}
 --- !u!1 &7229817629626485462 stripped
 GameObject:
@@ -3870,6 +3873,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HitVFX: {fileID: 2069353016376153019, guid: b1f98a2172efcb04b92111d0e277960a, type: 3}
   VFXOffset: 0.5
+--- !u!114 &6473867384890875412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7229817629626485462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 0
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 1
+  m_UseLocal: 1
 --- !u!4 &8007022423781019756 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5086268201243115593, guid: 9fbe61d1f4bc091439f25f985dd189a5, type: 3}
