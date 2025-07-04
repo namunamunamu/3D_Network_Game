@@ -8,6 +8,6 @@ public class Item_Crystal : ItemObject
     {
         base.ItemEffect();
         
-        _player.Score += Score;
+        ScoreManager.Instance.AddScore(Score);
     }
 }

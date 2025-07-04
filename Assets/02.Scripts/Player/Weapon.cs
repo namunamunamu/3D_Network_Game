@@ -11,6 +11,12 @@ public class Weapon : MonoBehaviour
     private void Start()
     {
         _attackAbility = GetComponentInParent<PlayerAttackAbility>();
+        ScoreManager.Instance.OnScoreRewarded += WeaponUpgrade;
+    }
+
+    private void WeaponUpgrade(int amount)
+    {
+        transform.localScale = new Vector3 (1, 1+((float)amount/10), 1);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -19,7 +25,7 @@ public class Weapon : MonoBehaviour
         {
             return;
         }
-        
+
         IDamageable damageableObject = other.GetComponent<IDamageable>();
         if (damageableObject != null)
         {

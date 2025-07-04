@@ -9,6 +9,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<Transform> _spawnPoints;
     public List<Transform> SpawnPoints => _spawnPoints;
 
+    [SerializeField] private List<Transform> _patrolPoints;
+    public List<Transform> PatrolPoints => _patrolPoints;
+
+    public Bear Bear;
+
     private void Awake()
     {
         if (Instance == null)
@@ -26,5 +31,10 @@ public class GameManager : MonoBehaviour
     private void Init()
     {
 
+    }
+
+    public Transform GetRandomPatrolPoint()
+    {
+        return _patrolPoints[Random.Range(0, _patrolPoints.Count)];
     }
 }

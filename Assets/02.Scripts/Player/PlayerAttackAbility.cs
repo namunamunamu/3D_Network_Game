@@ -1,6 +1,5 @@
 using UnityEngine;
 using Photon.Pun;
-using Unity.Mathematics;
 
 public class PlayerAttackAbility : PlayerAbility
 {
@@ -85,6 +84,15 @@ public class PlayerAttackAbility : PlayerAbility
         // damageableObject.Damaged(_owner.Stat.AttackDamage);
 
         PhotonView otherPhoton = other.GetComponent<PhotonView>();
-        otherPhoton.RPC(nameof(Player.Damaged), RpcTarget.AllBuffered, _owner.Stat.AttackDamage, _photonView.Owner.ActorNumber);
+
+
+        if (other.tag == "Player")
+        {
+            otherPhoton.RPC(nameof(Player.Damaged), RpcTarget.All, _owner.Stat.AttackDamage, _photonView.Owner.ActorNumber);
+        }
+        else
+        {
+            otherPhoton.RPC(nameof(Bear.Damaged), RpcTarget.All, _owner.Stat.AttackDamage, _photonView.Owner.ActorNumber);
+        }
     }
 }

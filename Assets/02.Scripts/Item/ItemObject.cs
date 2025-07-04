@@ -16,6 +16,12 @@ public abstract class ItemObject : MonoBehaviourPun
         if (other.CompareTag("Player"))
         {
             _player = other.GetComponent<Player>();
+            
+            if (!_player.GetComponent<PhotonView>().IsMine)
+            {
+                return;
+            }
+
             ItemEffect();
             ItemObjectFactory.Instnace.RequestDelete(photonView.ViewID);
         }

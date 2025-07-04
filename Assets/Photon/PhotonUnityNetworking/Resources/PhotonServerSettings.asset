@@ -46,6 +46,9 @@ MonoBehaviour:
   - PlayHitAnimation
   - Create
   - Delete
+  - GainKillCount
+  - RPCKillCount
+  - RequestAddKillCount
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

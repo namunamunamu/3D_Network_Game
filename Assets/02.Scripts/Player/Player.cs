@@ -27,7 +27,7 @@ public class Player : MonoBehaviour, IDamageable
     public GameObject EnemyIcon;
     public Slider HealthSlider;
 
-    public int Score = 0;
+    // public int Score = 0;
 
 
     [SerializeField] private bool _isSPComsumed = false;
@@ -177,7 +177,28 @@ public class Player : MonoBehaviour, IDamageable
 
 
         RoomManager.Instance.OnPlayerDeath(PhotonView.Owner.ActorNumber, actorNumber);
+
+
+        if (actorNumber != 99 && PhotonView.IsMine)
+        {
+            // ScoreManager.Instance.GainKillCount(actorNumber);
+            var actorPlayer = PhotonNetwork.CurrentRoom.GetPlayer(actorNumber);
+            PhotonView.RPC(nameof(RequestAddKillCount), actorPlayer);
+        }
+
+        int lostScore = ScoreManager.Instance.GetLoseScore();
+        for (int i = 0; i < lostScore / 10; i++)
+        {
+            ItemObjectFactory.Instnace.RequestCreate(EItemType.Score, transform.position + new Vector3(0, 2, 0));            
+        }
+
         OnDeadEvent?.Invoke();
+    }
+
+    [PunRPC]
+    private void RequestAddKillCount()
+    {
+        ScoreManager.Instance.AddKillCount();
     }
 
     private IEnumerator RespawnCoroutine()
@@ -189,7 +210,7 @@ public class Player : MonoBehaviour, IDamageable
 
         if (PhotonView.IsMine)
         {
-            PhotonView.RPC(nameof(Spawn), RpcTarget.All);            
+            PhotonView.RPC(nameof(Spawn), RpcTarget.All);
         }
 
         AddCurrentHP(Stat.MaxHealthPoint * 2);
@@ -235,7 +256,6 @@ public class Player : MonoBehaviour, IDamageable
             ItemObjectFactory.Instnace.RequestCreate(EItemType.Health, dropPosition);
         }
     }
-
 
 
     public T GetAbility<T>() where T : PlayerAbility
